@@ -7,6 +7,14 @@ import (
 	"unicode/utf8"
 )
 
+// Il lexer ha degli stati dove vengono emessi degli eventi. Gli eventi sono del tipo itemType ed hanno un valore val.
+// Il principio è molto semplice. Viene scansionata la stringa di input carattere per carattere partendo dallo stato
+// lexStateText. Lo stato è una funzione e ritorna lo stato successivo (una funzione del tipo stateFn). Se non ce ne sono di altri, allora nil.
+// Quando il lexer in una funzione di stato riconosce qualcosa di
+// interessante, allora chiama la funzione emit. Essa passa nel channel di comunicazione, un item che è la stringa di testo
+// scansionato tra la posizione corrente (variabile pos) e start.
+// Il chiamante del lexer, che è la funzione GetTemplateContent(), esegue in un ciclo la chiamata a nextItem() fino a quando lo stato è nil.
+
 type itemType int
 
 const (
@@ -37,13 +45,6 @@ type lexer struct {
 }
 
 type stateFn func(*lexer) stateFn
-
-func (l *lexer) run() {
-	for state := lexText; state != nil; {
-		state(l)
-	}
-	close(l.items)
-}
 
 func (l *lexer) emit(t itemType) {
 	l.items <- item{t, l.input[l.start:l.pos]}
@@ -95,7 +96,7 @@ func (l *lexer) nextItem() item {
 	}
 }
 
-func lexInsideTagContent(l *lexer) stateFn {
+func lexStateChild(l *lexer) stateFn {
 	for {
 		if strings.HasPrefix(l.input[l.pos:], l.endtokentag) {
 			//fmt.Println("** end of tag", l.input[l.pos:])
@@ -112,19 +113,19 @@ func lexInsideTagContent(l *lexer) stateFn {
 	}
 }
 
-func lexTagContent(l *lexer) stateFn {
+func lexStateTagName(l *lexer) stateFn {
 	l.pos += len(l.tokentag)
 	l.emit(itemTagName)
-	return lexInsideTagContent
+	return lexStateChild
 }
 
-func lexText(l *lexer) stateFn {
+func lexStateText(l *lexer) stateFn {
 	for {
 		if strings.HasPrefix(l.input[l.pos:], l.tokentag) {
 			if l.pos > l.start {
 				l.emit(itemText)
 			}
-			return lexTagContent // Next state
+			return lexStateTagName
 		}
 		if l.next() == eof {
 			break
@@ -142,7 +143,7 @@ func lexCtor(name, input string, tt string, endtt string) *lexer {
 		input:       input,
 		tokentag:    tt,
 		endtokentag: endtt,
-		state:       lexText,
+		state:       lexStateText,
 		items:       make(chan item, 2),
 	}
 	return l
@@ -166,7 +167,7 @@ func (vt *VueTempl) GetTemplateContent(str string) (string, error) {
 	rr := ""
 	for {
 		item := l.nextItem()
-		fmt.Printf("type %v, val %q\n", item.typ, item.val)
+		//fmt.Printf("*** type %v, val %q\n", item.typ, item.val)
 		if item.typ == itemError {
 			return "", fmt.Errorf(item.val)
 		}

@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"github/aaaasmile/TextProc/lexer"
 	"log"
 )
 
@@ -40,17 +40,23 @@ func main() {
 	if *vueFile == "" {
 		log.Fatal("Vue file is empty")
 	}
-	rawFile, err := ioutil.ReadFile(*vueFile)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// rawFile, err := ioutil.ReadFile(*vueFile)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	env := VueStruct{}
+	// env := VueStruct{}
 
-	err = xml.Unmarshal(rawFile, &env)
+	// err = xml.Unmarshal(rawFile, &env)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println("*** Template is", env)
+	vt := lexer.VueTempl{TokenTag: "<template>"}
+	tmpl, err := vt.GetTemplateFromFile(*vueFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln("Error on processing vue file", err)
 	}
-	fmt.Println("*** Template is", env)
+	fmt.Println("*** Template is", tmpl)
 
 }

@@ -52,7 +52,7 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 	// fmt.Println("*** Template is", env)
-	vt := lexer.VueTempl{TokenTag: "<template>"}
+	vt := lexer.VueTempl{}
 	tmpl, err := vt.GetTemplateFromFile(*vueFile)
 	if err != nil {
 		log.Fatalln("Error on processing vue file", err)

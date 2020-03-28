@@ -4,23 +4,18 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-	"unicode"
 	"unicode/utf8"
 )
 
 type itemType int
 
-type VueTempl struct {
-	TokenTag string
-}
-
 const (
-	eof                = -1
-	itemError itemType = iota
+	eof               = -1
+	itemText itemType = iota
+	itemTagName
+	itemTagChildContent
+	itemError
 	itemEOF
-	itemSubTagContent
-	itemTagContent
-	itemText
 )
 
 type item struct {
@@ -30,14 +25,15 @@ type item struct {
 }
 
 type lexer struct {
-	name     string
-	input    string
-	tokentag string
-	start    int
-	pos      int
-	width    int
-	state    stateFn
-	items    chan item
+	name        string
+	input       string
+	tokentag    string
+	endtokentag string
+	start       int
+	pos         int
+	width       int
+	state       stateFn
+	items       chan item
 }
 
 type stateFn func(*lexer) stateFn
@@ -99,36 +95,26 @@ func (l *lexer) nextItem() item {
 	}
 }
 
-func lexDocInTag(l *lexer) stateFn {
-	for {
-		switch r := l.next(); {
-		case r == eof || r == '\n':
-			return l.errorf("string error")
-		case r == '>':
-			l.backup()
-			l.emit(itemSubTagContent)
-			return nil
-		}
-	}
-}
-
 func lexInsideTagContent(l *lexer) stateFn {
 	for {
-		switch r := l.next(); {
-		case r == eof || r == '\n':
-			return l.errorf("format error")
-		case unicode.IsSpace(r):
-			l.ignore()
-		case r == '/':
-			l.ignore()
-			return lexDocInTag
+		if strings.HasPrefix(l.input[l.pos:], l.endtokentag) {
+			//fmt.Println("** end of tag", l.input[l.pos:])
+			if l.pos > l.start {
+				l.backup() // in questo punto si è posizionati sul primo carattere di endtokentag
+				l.emit(itemTagChildContent)
+				return nil
+			}
+			return l.errorf("Lex is wrong on tag %s", l.endtokentag)
+		}
+		if l.next() == eof {
+			return l.errorf("Malformed file, end of tag %s not found", l.endtokentag)
 		}
 	}
 }
 
 func lexTagContent(l *lexer) stateFn {
 	l.pos += len(l.tokentag)
-	l.emit(itemTagContent)
+	l.emit(itemTagName)
 	return lexInsideTagContent
 }
 
@@ -150,35 +136,48 @@ func lexText(l *lexer) stateFn {
 	return nil
 }
 
-func lexCtor(name, input string, tt string) *lexer {
+func lexCtor(name, input string, tt string, endtt string) *lexer {
 	l := &lexer{
-		name:     name,
-		input:    input,
-		tokentag: tt,
-		state:    lexText,
-		items:    make(chan item, 2),
+		name:        name,
+		input:       input,
+		tokentag:    tt,
+		endtokentag: endtt,
+		state:       lexText,
+		items:       make(chan item, 2),
 	}
 	return l
 }
 
-func (vt *VueTempl) GetTemplateContent(str string) string {
-	if vt.TokenTag != "" {
+type VueTempl struct {
+	TokenTag    string
+	EndTokenTag string
+}
+
+func (vt *VueTempl) GetTemplateContent(str string) (string, error) {
+	if vt.TokenTag == "" {
 		vt.TokenTag = "<template>"
+		vt.EndTokenTag = "</template>"
+	}
+	if vt.EndTokenTag == "" {
+		return "", fmt.Errorf("Lex not properly configured")
 	}
 
-	l := lexCtor("Text lex", str, vt.TokenTag)
+	l := lexCtor("Text lex", str, vt.TokenTag, vt.EndTokenTag)
 	rr := ""
 	for {
 		item := l.nextItem()
 		fmt.Printf("type %v, val %q\n", item.typ, item.val)
-		if item.typ == itemSubTagContent {
+		if item.typ == itemError {
+			return "", fmt.Errorf(item.val)
+		}
+		if item.typ == itemTagChildContent {
 			rr = item.val
 		}
 		if l.state == nil {
 			break
 		}
 	}
-	return rr
+	return rr, nil
 
 }
 
@@ -189,9 +188,5 @@ func (vt *VueTempl) GetTemplateFromFile(filename string) (string, error) {
 	}
 	s := string(buf)
 	//fmt.Println(s)
-	vn := vt.GetTemplateContent(s)
-	if vn == "" {
-		return "", fmt.Errorf("Template is empty")
-	}
-	return vn, nil
+	return vt.GetTemplateContent(s)
 }

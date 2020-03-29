@@ -3,6 +3,7 @@ package lexer
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strings"
 	"unicode/utf8"
 )
@@ -24,6 +25,7 @@ const (
 	itemTagChildContent
 	itemError
 	itemEOF
+	itemTextWrong
 )
 
 type item struct {
@@ -128,6 +130,10 @@ func lexStateTagName(l *lexer) stateFn {
 	return lexStateChild
 }
 
+func lexStateError(l *lexer) stateFn {
+	return l.errorf("Template section not found")
+}
+
 func lexStateText(l *lexer) stateFn {
 	for {
 		if strings.HasPrefix(l.input[l.pos:], l.tokentag) {
@@ -137,7 +143,8 @@ func lexStateText(l *lexer) stateFn {
 			return lexStateTagName
 		}
 		if l.next() == eof {
-			return l.errorf("Template section not found")
+			l.emit(itemTextWrong)
+			return lexStateError
 		}
 	}
 	if l.pos > l.start {
@@ -177,6 +184,9 @@ func (vt *VueTempl) GetTemplateContent(str string) (string, error) {
 	for {
 		item := l.nextItem()
 		//fmt.Printf("*** type %v, val %q\n", item.typ, item.val)
+		if item.typ == itemTextWrong {
+			log.Println("This is a wrong template: ", item.val)
+		}
 		if item.typ == itemError {
 			return "", fmt.Errorf(item.val)
 		}

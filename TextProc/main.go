@@ -28,7 +28,7 @@ import (
 // avendo in automatico il risultato nel file js senza avere un preprocessor della mole di node e webpack.
 
 // Command line example: .\TextProc.exe -vue .\example\home.vue
-const Buildnr = "00.01.02-20200329"
+const Buildnr = "00.01.03-20200330"
 const LogfileName = "TextProc.log"
 
 func main() {
@@ -67,7 +67,7 @@ func main() {
 	vt := lexer.VueTempl{} // uso un lexer e non xml UnmarshalXML in quanto il contenuto del file vue non si lascia scansionare con un parser xml puro
 	tmpl, err := vt.GetTemplateFromFile(*vueFile)
 	if err != nil {
-		log.Fatalln("Error on processing vue file", err)
+		log.Fatalln("Error on processing vue file: ", err)
 	}
 	log.Println("Template content is", tmpl)
 

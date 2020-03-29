@@ -26,6 +26,8 @@ import (
 // Però editare template vue in js nella variabile template: `` è abbastanza penoso. Ecco perchè l'idea di editare il template nel file .vue
 // avendo in automatico il risultato nel file js senza avere un preprocessor della mole di node e webpack.
 
+// Command line example: .\TextProc.exe -vue .\example\home.vue
+
 func main() {
 	var vueFile = flag.String("vue", "", "Vue file with only the template")
 	flag.Parse()

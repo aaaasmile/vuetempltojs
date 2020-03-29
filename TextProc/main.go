@@ -3,7 +3,11 @@ package main
 import (
 	"flag"
 	"github/aaaasmile/TextProc/lexer"
+	"github/aaaasmile/TextProc/lexerjs"
 	"log"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 // Lo scopo di questo programma è quello di prendere il contenuto del file vue di input e:
@@ -29,6 +33,9 @@ func main() {
 	if *vueFile == "" {
 		log.Fatal("Vue file is empty")
 	}
+	if filepath.Ext(*vueFile) != ".vue" {
+		log.Fatalf("The file %s is not a vue file", *vueFile)
+	}
 
 	vt := lexer.VueTempl{} // uso un lexer e non xml UnmarshalXML in quanto il contenuto del file vue non si lascia scansionare con un parser xml puro
 	tmpl, err := vt.GetTemplateFromFile(*vueFile)
@@ -37,4 +44,22 @@ func main() {
 	}
 	log.Println("Template content is", tmpl)
 
+	dir, file := filepath.Split(*vueFile)
+	fileJs := strings.TrimSuffix(file, filepath.Ext(file))
+	fileJs = filepath.Join(dir, fileJs+".js") // file di destinazione con lo stesso nome ma estensione .js
+	if _, err := os.Stat(fileJs); err != nil {
+		log.Fatalf("Destination file %s not found", fileJs)
+	}
+	log.Println("Prepare to update the file ", fileJs)
+	jt := lexerjs.JsTempl{}
+	err = jt.SplitContentComponent(fileJs)
+	if err != nil {
+		log.Fatalln("Error on processing js file", err)
+	}
+	//fmt.Printf("*** info\n%s", jt.String())
+	jt.SectionContent = tmpl
+	if err := jt.WriteFile(fileJs); err != nil {
+		log.Fatal("Error ", err)
+	}
+	log.Printf("File %s successfully updated", fileJs)
 }

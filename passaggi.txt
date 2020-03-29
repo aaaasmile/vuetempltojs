@@ -1,0 +1,35 @@
+== vuetempltojs
+Questa è extension per visual code creata per editare i templates in un file .vue e mettere il risultato nel file js
+dove si trova il componente. Questo senza aver bisogno di webpack.
+Uso la convenzione che per un componente .vue (esempio home.vue) esite un file con lo stesso nome (esempio home.js).
+
+Per creare l'extension ho usato node con il comando:
+npm install  yo generator-code
+.\node_modules\.bin\yo code
+Qui ho seguito le istruzioni ed ho creato un extension vuetempltojs in js.
+Poi sono andato nella dir vuetempltojs ed ho lanciato:
+code .
+Ora ho un'extension che esegue un 'hello world' usando il comando vuetempltojs in code. 
+Per testare l'extension e vedere il risultato basta usare F5.
+Il file da cambiare è extension.js.
+
+== Sviluppo
+Un parser in js non è il mio forte, allora ho creato il tool TextProc in golang.
+Esso funziona con questa liena di comando:
+.\TextProc.exe -vue .\example\home.vue
+Il risultato è che il file .\example\home.js viene sincronizzato con il file vue.
+
+La mia extension deve lanciare il tool con il parametro del file attualmente attivo nell'editor.
+Uso node e le sue librerie.
+Per le funzioni disponibile nell'extension che riguardano code, tipo nome del file attivo in code, 
+vedi https://code.visualstudio.com/api/references/vscode-api
+Due esempi che mi hanno ispirato sono:
+https://github.com/yhirose/vscode-filtertext/blob/master/src/extension.ts
+https://github.com/jamesqquick/Web-Boilerplate-VSCE
+Per quanto riguarda la documentazione di node del fartire dei comandi:
+https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
+
+
+
+
+

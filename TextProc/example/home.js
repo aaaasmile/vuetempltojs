@@ -12,7 +12,7 @@ export const app = new Vue({
   <v-app>
     <v-content>
       <div class="home">
-        <h2>Testing Vuetify</h2>
+        <h2>Testing Vuetify: awesome</h2>
         <v-btn color="pink">Rosa</v-btn>
         <v-btn>Click Me!</v-btn>
         <v-btn class="pink white--text">

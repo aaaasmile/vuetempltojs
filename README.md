@@ -1,23 +1,15 @@
-# vuetempltojs README
-This extension is useful for editing .vue template files.
+# Vuetempltojs
+This extension is used for editing vue component with an inline template in js code. 
+The .vue file is used only for editing the component template. 
+This extension copy the content of the template inside the .vue file and replace
+the template section into the js file. In this case there is no need for a builder tool 
+like a webpack. 
 
 ## Features
-1) Edit a Vue template for a component and propagate the chnages also in the js file.
-
-## Requirements
-TextProc is required.
-
-## Extension Settings
-The TextProc needs to be configured.
-
-## Known Issues
-
-None.
+Edit a Vue template for a component and propagate the chnages also in the js file.
 
 ## Release Notes
+Initial version with the basi functionality.
 
-First version i published.
-
-### 1.0.0
-
-Initial release of vuetempltojs. Nothing more to say.
+### 0.0.2
+Initial release of vuetempltojs.

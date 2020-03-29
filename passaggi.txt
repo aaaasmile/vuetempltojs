@@ -3,6 +3,14 @@ Questa è extension per visual code creata per editare i templates in un file .v
 dove si trova il componente. Questo senza aver bisogno di webpack.
 Uso la convenzione che per un componente .vue (esempio home.vue) esite un file con lo stesso nome (esempio home.js).
 
+=== Uso
+Ho memorizzato il comando vuetempltojs con la combinazione di tasti:
+CTRL + k + 9
+Quindi edito il file .vue e premo CTRL + k + 9 (come? con CTRL + k + CTRL + s)
+A questo punto il file .vue viene, se necessario, salvato e successivamente in modo automatico viene copiato
+il contenuto di <template> nella sezione tempate del file .js.
+
+== Info come creare un'estensione
 Per partire meglio vedere qui:
 https://code.visualstudio.com/api/get-started/your-first-extension
 

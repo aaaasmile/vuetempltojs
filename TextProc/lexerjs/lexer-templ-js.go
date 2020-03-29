@@ -144,7 +144,7 @@ func lexStateText(l *lexer) stateFn {
 			return lexStateTagName
 		}
 		if l.next() == eof {
-			break
+			return l.errorf("Template section not found")
 		}
 	}
 	if l.pos > l.start {

@@ -23,7 +23,7 @@ function activate(context) {
 	let disposable = vscode.commands.registerCommand('extension.vueTemplInJs', function () {
 		// The code you place here will be executed every time your command is executed
 
-		runcmd();
+		runcmd(context);
 	
 		// Display a message box to the user
 		//vscode.window.showInformationMessage('Here I want to copy the template in component');
@@ -36,9 +36,10 @@ exports.activate = activate;
 // this method is called when your extension is deactivated
 function deactivate() { }
 
-function runcmd() {
-	let tool = "D:\\scratch\\vscode-extension\\hello\\vuetempltojs\\TextProc\\TextProc.exe"
-
+function runcmd(context) {
+	let tool = context.asAbsolutePath("TextProc\\TextProc.exe"); // nel package vie incluso anche TextProc.exe nella sottodir TextProc
+	//console.log("** Logpath is ", context.logPath)
+	
 	const uri = vscode.window.activeTextEditor.document.uri;
 	let fileIsWrong = true
 	let fname = vscode.window.activeTextEditor.document.fileName
@@ -52,8 +53,13 @@ function runcmd() {
 		console.log('This command is available only for .vue files as active document')
 		return
 	}
+
+	if (vscode.window.activeTextEditor.document.isDirty){
+		console.log('Save the file before processing it')
+		vscode.window.activeTextEditor.document.save()
+	}
 	
-	let args = ['-vue', fname]
+	let args = ['-vue', fname, '-logpath', context.logPath]
 	let cwd = path.dirname(fname)
 
 	//console.log(tool, args)

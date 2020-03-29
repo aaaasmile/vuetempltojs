@@ -101,11 +101,11 @@ func lexStateChild(l *lexer) stateFn {
 	templToken := strings.TrimRight(l.tokentag, ">")
 	for {
 		if strings.HasPrefix(l.input[l.pos:], templToken) {
-			fmt.Println("*** Sub token found on level ", endTagCount)
+			//fmt.Println("*** Sub token found on level ", endTagCount)
 			endTagCount++
 		}
 		if strings.HasPrefix(l.input[l.pos:], l.endtokentag) {
-			fmt.Println("** end of tag", l.input[l.pos:])
+			//fmt.Println("** end of tag", l.input[l.pos:])
 			endTagCount--
 			if endTagCount <= 0 {
 				if l.pos > l.start {
@@ -137,7 +137,7 @@ func lexStateText(l *lexer) stateFn {
 			return lexStateTagName
 		}
 		if l.next() == eof {
-			break
+			return l.errorf("Template section not found")
 		}
 	}
 	if l.pos > l.start {

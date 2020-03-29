@@ -29,9 +29,12 @@ import (
 
 // Command line example: .\TextProc.exe -vue .\example\home.vue
 const Buildnr = "00.01.02-20200329"
+const LogfileName = "TextProc.log"
 
 func main() {
+	log.SetOutput(os.Stdout)
 	var vueFile = flag.String("vue", "", "Vue file with only the template")
+	var logpath = flag.String("logpath", "", fmt.Sprintf("An absolute file path of a directory in which the tool create the log file %s", LogfileName))
 	var ver = flag.Bool("ver", false, "Tool version")
 	flag.Parse()
 
@@ -39,6 +42,21 @@ func main() {
 		fmt.Println("TextProc version ", Buildnr)
 		os.Exit(0)
 	}
+
+	if *logpath != "" {
+		if _, err := os.Stat(*logpath); os.IsNotExist(err) {
+			os.Mkdir(*logpath, 0777)
+		}
+		fname := filepath.Join(*logpath, LogfileName)
+		f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
+		log.Println("Log file is ", fname)
+		if err != nil {
+			log.Fatalf("error opening file: %v", err)
+		}
+		defer f.Close()
+		log.SetOutput(f)
+	}
+
 	if *vueFile == "" {
 		log.Fatal("Vue file is empty")
 	}

@@ -1,7 +1,7 @@
 <!-- my-component.vue -->
 <template>
   <v-app>
-    <v-content>
+   <v-content>
       <div class="home">
         <h2>Tesing</h2>
         <v-btn color="pink">Rosa</v-btn>
@@ -14,6 +14,6 @@
         </v-btn>
       </div>
       <p>Buildnr: {{Buildnr}}</p>
-    </v-content>
+    </v-content> 
   </v-app>
 </template>

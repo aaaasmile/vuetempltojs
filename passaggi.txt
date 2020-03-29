@@ -43,11 +43,16 @@ Ora finalmente con
 PS D:\scratch\vscode-extension\hello\vuetempltojs> ..\node_modules\.bin\vsce.cmd package
 riesco a creare un vsix per installarlo manualmente.
 
+Per installare l'estensione in modo manuale:
+PS D:\scratch\vscode-extension\hello\vuetempltojs> code --install-extension .\vuetempltojs-0.0.1.vsix
+
 == Sviluppo
 Un parser in js non è il mio forte, allora ho creato il tool TextProc in golang.
 Esso funziona con questa liena di comando:
 .\TextProc.exe -vue .\example\home.vue
 Il risultato è che il file .\example\home.js viene sincronizzato con il file vue.
+Gli output del TextProc.exe vengono messi in un log file. Una sottodirectory di C:\Users\igors\AppData\Roaming\Code\logs\
+Essa viene passata come parametro al tool.
 
 La mia extension deve lanciare il tool con il parametro del file attualmente attivo nell'editor.
 Uso node e le sue librerie.

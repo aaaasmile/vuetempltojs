@@ -3,6 +3,9 @@ Questa è extension per visual code creata per editare i templates in un file .v
 dove si trova il componente. Questo senza aver bisogno di webpack.
 Uso la convenzione che per un componente .vue (esempio home.vue) esite un file con lo stesso nome (esempio home.js).
 
+Per partire meglio vedere qui:
+https://code.visualstudio.com/api/get-started/your-first-extension
+
 Per creare l'extension ho usato node con il comando:
 npm install  yo generator-code
 .\node_modules\.bin\yo code
@@ -12,6 +15,25 @@ code .
 Ora ho un'extension che esegue un 'hello world' usando il comando vuetempltojs in code. 
 Per testare l'extension e vedere il risultato basta usare F5.
 Il file da cambiare è extension.js.
+
+Per creare l'installer:
+npm install vsce
+
+poi ho creato un personal token usando https://navax.visualstudio.com/_usersSettings/tokens
+Il token personal mi serve per creare il publisher.
+Comando:
+PS D:\scratch\vscode-extension\hello\vuetempltojs> ..\node_modules\.bin\vsce.cmd create-publisher igsa
+Le istruzioni per creare il token le ho seguite su https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+Poi ho messo "publisher": "igsa" nel file package.json
+Ho dovuto modificare il file readme.md, penso che sia la prima riga importante.
+Poi ho aggiunto 
+"repository": {
+		"type": "git",
+		"url": "https://github.com/aaaasmile/vuetempltojs.git"
+	},
+Ora finalmente con 
+PS D:\scratch\vscode-extension\hello\vuetempltojs> ..\node_modules\.bin\vsce.cmd package
+riesco a creare un vsix per installarlo manualmente.
 
 == Sviluppo
 Un parser in js non è il mio forte, allora ho creato il tool TextProc in golang.

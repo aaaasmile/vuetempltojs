@@ -15,7 +15,7 @@ function activate(context) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vuetempltojs" is now active!');
+	console.log('"vuetempltojs" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
@@ -23,7 +23,8 @@ function activate(context) {
 	let disposable = vscode.commands.registerCommand('extension.vueTemplInJs', function () {
 		// The code you place here will be executed every time your command is executed
 
-	runcmd()
+		runcmd();
+	
 		// Display a message box to the user
 		//vscode.window.showInformationMessage('Here I want to copy the template in component');
 	});
@@ -46,7 +47,7 @@ function runcmd() {
 		fileIsWrong = (extName !== '.vue')
 	}
 	
-	console.log('** file', fname)
+	//console.log('** file', fname)
 	if (fileIsWrong){
 		console.log('This command is available only for .vue files as active document')
 		return
@@ -55,10 +56,11 @@ function runcmd() {
 	let args = ['-vue', fname]
 	let cwd = path.dirname(fname)
 
-	console.log(tool, args)
+	//console.log(tool, args)
 
 	try {
-		let textProc = child_process.spawn(tool, args, {cwd});
+		console.log("Starting the TextProc")
+		let textProc = child_process.spawn(tool, args, {cwd} );
 		textProc.on('error', (err) => {
 			console.error('Failed to start subprocess.', err);
 		});
@@ -72,6 +74,7 @@ function runcmd() {
 		ls.on('close', (code) => {
 			console.log(`child process exited with code ${code}`);
 		});
+		console.log("TextProc executed.")
 
 	} catch (err) {
 		vscode.window.showErrorMessage(err);

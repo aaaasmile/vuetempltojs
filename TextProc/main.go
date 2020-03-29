@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github/aaaasmile/TextProc/lexer"
 	"github/aaaasmile/TextProc/lexerjs"
 	"log"
@@ -27,11 +28,17 @@ import (
 // avendo in automatico il risultato nel file js senza avere un preprocessor della mole di node e webpack.
 
 // Command line example: .\TextProc.exe -vue .\example\home.vue
+const Buildnr = "00.01.02-20200329"
 
 func main() {
 	var vueFile = flag.String("vue", "", "Vue file with only the template")
+	var ver = flag.Bool("ver", false, "Tool version")
 	flag.Parse()
 
+	if *ver {
+		fmt.Println("TextProc version ", Buildnr)
+		os.Exit(0)
+	}
 	if *vueFile == "" {
 		log.Fatal("Vue file is empty")
 	}

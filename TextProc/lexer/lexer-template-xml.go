@@ -97,15 +97,24 @@ func (l *lexer) nextItem() item {
 }
 
 func lexStateChild(l *lexer) stateFn {
+	endTagCount := 1
+	templToken := strings.TrimRight(l.tokentag, ">")
 	for {
+		if strings.HasPrefix(l.input[l.pos:], templToken) {
+			fmt.Println("*** Sub token found on level ", endTagCount)
+			endTagCount++
+		}
 		if strings.HasPrefix(l.input[l.pos:], l.endtokentag) {
-			//fmt.Println("** end of tag", l.input[l.pos:])
-			if l.pos > l.start {
-				l.backup() // in questo punto si è posizionati sul primo carattere di endtokentag
-				l.emit(itemTagChildContent)
-				return nil
+			fmt.Println("** end of tag", l.input[l.pos:])
+			endTagCount--
+			if endTagCount <= 0 {
+				if l.pos > l.start {
+					l.backup() // in questo punto si è posizionati sul primo carattere di endtokentag
+					l.emit(itemTagChildContent)
+					return nil
+				}
+				return l.errorf("Lex is wrong on tag %s", l.endtokentag)
 			}
-			return l.errorf("Lex is wrong on tag %s", l.endtokentag)
 		}
 		if l.next() == eof {
 			return l.errorf("Malformed file, end of tag %s not found", l.endtokentag)

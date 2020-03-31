@@ -33,9 +33,10 @@ const LogfileName = "TextProc.log"
 
 func main() {
 	log.SetOutput(os.Stdout)
-	var vueFile = flag.String("vue", "", "Vue file with only the template")
+	var vueFile = flag.String("vue", "", "Vue file that contains the component template")
 	var logpath = flag.String("logpath", "", fmt.Sprintf("An absolute file path of a directory in which the tool create the log file %s", LogfileName))
 	var ver = flag.Bool("ver", false, "Tool version")
+
 	flag.Parse()
 
 	if *ver {

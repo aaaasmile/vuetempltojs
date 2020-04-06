@@ -9,6 +9,18 @@ CTRL + k + 9
 Quindi edito il file .vue e premo CTRL + k + 9 (come? con CTRL + k + CTRL + s)
 A questo punto il file .vue viene, se necessario, salvato e successivamente in modo automatico viene copiato
 il contenuto di <template> nella sezione tempate del file .js.
+È possibile anche fare funzionare l'export del template usando CTRL + s sul file vue. 
+Questa opzione è nei settings.
+
+== Creare una nuova versione
+Una volta aggiornato il codice, si deve:
+- Cambiare il file package.json
+- Aggiornare il file readme.md
+- Create l'installer vsix con:
+PS D:\scratch\vscode-extension\hello\vuetempltojs> ..\node_modules\.bin\vsce.cmd package
+- Deinstallare la versione vecchia
+- Installare la nuova versione con
+code --install-extension .\vuetempltojs-0.0.3.vsix
 
 == Info come creare un'estensione
 Per partire meglio vedere qui:

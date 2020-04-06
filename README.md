@@ -11,5 +11,8 @@ Edit a Vue template for a component and propagate the chnages also in the js fil
 ## Release Notes
 Initial version with the basic functionality.
 
+### 0.0.3
+Adde trigger OnSave vue file.
+
 ### 0.0.2
 Initial release of vuetempltojs.

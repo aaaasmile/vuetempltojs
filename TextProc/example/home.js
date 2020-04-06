@@ -15,7 +15,7 @@ export const app = new Vue({
         <h2>Tesing me p
           lease</h2>
         <v-btn color="pink">Rosa</v-btn>
-        <v-btn>Click Please</v-btn>
+        <v-btn>Clic Please</v-btn>
         <v-btn class="pink white--text">
           <v-icon left small>email di Igor</v-icon>
         </v-btn>

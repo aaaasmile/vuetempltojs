@@ -3,9 +3,10 @@
   <v-app>
    <v-content>
       <div class="home">
-        <h2>Tesing</h2>
+        <h2>Tesing me p
+          lease</h2>
         <v-btn color="pink">Rosa</v-btn>
-        <v-btn>Cliccami</v-btn>
+        <v-btn>Click Please</v-btn>
         <v-btn class="pink white--text">
           <v-icon left small>email di Igor</v-icon>
         </v-btn>

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "D:\\scratch\\vscode-extension\\vuetempltojs"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"go.useLanguageServer": true
+	}
+}

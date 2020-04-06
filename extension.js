@@ -17,18 +17,35 @@ function activate(context) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('"vuetempltojs" is now active!');
 
+	const config = vscode.workspace.getConfiguration('vueTemplInJs');
+	console.log('Configuration is ', config)
+
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.vueTemplInJs', function () {
 		// The code you place here will be executed every time your command is executed
-
 		runcmd(context);
-	
 		// Display a message box to the user
 		//vscode.window.showInformationMessage('Here I want to copy the template in component');
 	});
 
+	if (config.runOnSave) {
+		vscode.workspace.onDidSaveTextDocument((document) => {
+			//console.log('Run on save')
+
+			const uri = vscode.window.activeTextEditor.document.uri;
+			if (document.languageId === 'vue' && uri.scheme === 'file') {
+				const fname = vscode.window.activeTextEditor.document.fileName;
+				const extName = path.extname(fname);
+				if (extName === '.vue') {
+					runcmd(context);
+				}
+			}
+		});
+	}
+	
 	context.subscriptions.push(disposable);
 }
 exports.activate = activate;
@@ -37,36 +54,40 @@ exports.activate = activate;
 function deactivate() { }
 
 function runcmd(context) {
+	const activeEditor = vscode.window.activeTextEditor;
+	if (!activeEditor) {
+		return;
+	}
 	let tool = context.asAbsolutePath("TextProc\\TextProc.exe"); // nel package vie incluso anche TextProc.exe nella sottodir TextProc
 	//console.log("** Logpath is ", context.logPath)
-	
+
 	const uri = vscode.window.activeTextEditor.document.uri;
-	let fileIsWrong = true
-	let fname = vscode.window.activeTextEditor.document.fileName
-	if (uri.scheme === 'file'){
-		let extName = path.extname(fname)
-		fileIsWrong = (extName !== '.vue')
-	}
-	
-	//console.log('** file', fname)
-	if (fileIsWrong){
-		console.log('This command is available only for .vue files as active document')
-		return
+	let fileIsWrong = true;
+	let fname = vscode.window.activeTextEditor.document.fileName;
+	if (uri.scheme === 'file') {
+		let extName = path.extname(fname);
+		fileIsWrong = (extName !== '.vue');
 	}
 
-	if (vscode.window.activeTextEditor.document.isDirty){
-		console.log('Save the file before processing it')
-		vscode.window.activeTextEditor.document.save()
+	//console.log('** file', fname)
+	if (fileIsWrong) {
+		console.log('This command is available only for .vue files as active document');
+		return;
 	}
-	
-	let args = ['-vue', fname, '-logpath', context.logPath]
-	let cwd = path.dirname(fname)
+
+	if (vscode.window.activeTextEditor.document.isDirty) {
+		console.log('Save the file before processing it');
+		vscode.window.activeTextEditor.document.save();
+	}
+
+	let args = ['-vue', fname, '-logpath', context.logPath];
+	let cwd = path.dirname(fname);
 
 	//console.log(tool, args)
 
 	try {
-		console.log("Starting the TextProc")
-		let textProc = child_process.spawn(tool, args, {cwd} );
+		console.log("Starting the TextProc");
+		let textProc = child_process.spawn(tool, args, { cwd });
 		textProc.on('error', (err) => {
 			console.error('Failed to start subprocess.', err);
 		});
@@ -80,7 +101,7 @@ function runcmd(context) {
 		ls.on('close', (code) => {
 			console.log(`child process exited with code ${code}`);
 		});
-		console.log("TextProc executed.")
+		console.log("TextProc executed.");
 
 	} catch (err) {
 		vscode.window.showErrorMessage(err);

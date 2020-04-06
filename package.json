@@ -24,7 +24,18 @@
 				"command": "extension.vueTemplInJs",
 				"title": "Vue Template in Js"
 			}
-		]
+		],
+		"configuration": {
+			"title": "vueTemplInJs command configuration.",
+			"type": "object",
+			"properties": {
+				"vueTemplInJs.runOnSave": {
+					"type": "boolean",
+					"description": "Run the template export when a vue file is saved.",
+					"default": true
+				}
+			}
+		}
 	},
 	"scripts": {
 		"lint": "eslint .",

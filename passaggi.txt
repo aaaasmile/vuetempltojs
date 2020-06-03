@@ -76,6 +76,11 @@ https://github.com/jamesqquick/Web-Boilerplate-VSCE
 Per quanto riguarda la documentazione di node del fartire dei comandi:
 https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
 
+== PI4
+Naturalmente la scelta di usare un binario .exe windows nell'extensions ha fatto si che essa non
+funzioni su Pi4. Allora ho compilato il programma e usato come liena di comando nella shell.
+go build -o vuetojs.bin
+
 
 
 

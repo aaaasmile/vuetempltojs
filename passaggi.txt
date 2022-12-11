@@ -1,7 +1,9 @@
 == vuetempltojs
-Questa è extension per visual code creata per editare i templates in un file .vue e mettere il risultato nel file js
-dove si trova il componente. Questo senza aver bisogno di webpack.
-Uso la convenzione che per un componente .vue (esempio home.vue) esite un file con lo stesso nome (esempio home.js).
+Questa è extension per Visual Code creata per editare i templates in un file .vue e 
+poi mettere il risultato nell'omonimo file js dove si trova il componente. 
+Questo senza aver bisogno di webpack.
+Uso questa convenzione: per un componente .vue (esempio home.vue) 
+esite un file .js con lo stesso nome (esempio home.js).
 
 === Uso
 Ho memorizzato il comando vuetempltojs con la combinazione di tasti:
@@ -22,7 +24,24 @@ PS D:\scratch\vscode-extension\hello\vuetempltojs> ..\node_modules\.bin\vsce.cmd
 - Installare la nuova versione con
 code --install-extension .\vuetempltojs-0.0.3.vsix
 
-== Info come creare un'estensione
+== Creare l'estensione partendo dal progetto git
+-Creo una nuova directory vuetempltojs
+-poi lancio in questa dir: 
+git clone https://github.com/aaaasmile/vuetempltojs.git
+- vado in /TextProc e creo il file TextProc.exe con:
+go build
+- ora in WSL installo il generatore di vsix con:
+cd igor@MiniToro:/mnt/d/Projects/github/vuetempltojs
+npm install vsce
+
+- Sempre in WSL 
+cd vuetempltojs
+../node_modules/.bin/vsce package
+Ora ho il pacchetto vuetempltojs-0.0.3.vsix pronto per l'installazione.
+- In Powershell
+code --install-extension .\vuetempltojs-0.0.3.vsix
+
+== Info come creare un'estensione da zero
 Per partire meglio vedere qui:
 https://code.visualstudio.com/api/get-started/your-first-extension
 
@@ -78,7 +97,7 @@ https://nodejs.org/api/child_process.html#child_process_child_process_spawn_comm
 
 == PI4
 Naturalmente la scelta di usare un binario .exe windows nell'extensions ha fatto si che essa non
-funzioni su Pi4. Allora ho compilato il programma e usato come liena di comando nella shell.
+funzioni su Pi4. Allora ho compilato il programma e usato come linea di comando nella shell.
 go build -o vuetojs.bin
 
 
